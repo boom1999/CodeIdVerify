@@ -66,6 +66,11 @@ def drawPoint(draw):
 
 
 def createImg(folder):
+    """
+    Use drawPoint(), drawLine(), getRandomColor(), getRandomChar() to generate an Img by random
+    :param folder: train or test folder
+    :return: None
+    """
     # Generate background color by random
     bg_color = getRandomColor(is_light=True)
     # Generate a Img
@@ -110,7 +115,6 @@ if __name__ == '__main__':
     os.path.exists('train') or os.makedirs('train')
     os.path.exists('test') or os.makedirs('test')
 
-    # 每个文件夹创建num个
     for i in range(num):
         createImg('train')
         createImg('test')
