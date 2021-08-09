@@ -40,7 +40,8 @@ def deNoising(image):
                 b = 0
                 image.putpixel((i, j), (r, g, b))
     # Turn to grayscale Img
-    image = image.convert('L')
+    # TODO:暂时不转换成灰度图片，以方便反复测试，灰度图片无法第二次通过像素点的处理
+    # image = image.convert('L')
     return image
 
 
