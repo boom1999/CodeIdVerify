@@ -2,7 +2,7 @@
 # @Time : 2021/8/8 16:05
 # @Author : lingz
 # @Software: PyCharm
-
+import numpy
 import os
 from PIL import Image
 import numpy as np
@@ -13,6 +13,23 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 train_data_dir = r'train'
 test_data_dir = r'test'
 model_dir = r'model.h5'
+char_set = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] + ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
+                                                                 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+                                                                 'w', 'x', 'y', 'z'] + ['A', 'B', 'C', 'D', 'E', 'F',
+                                                                                        'G', 'H', 'I', 'J', 'K', 'L',
+                                                                                        'M', 'N', 'O', 'P', 'Q', 'R',
+                                                                                        'S', 'T', 'U', 'V', 'W', 'X',
+                                                                                        'Y', 'Z']
+alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
+            'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+            'w', 'x', 'y', 'z'] + ['A', 'B', 'C', 'D', 'E', 'F',
+                                   'G', 'H', 'I', 'J', 'K', 'L',
+                                   'M', 'N', 'O', 'P', 'Q', 'R',
+                                   'S', 'T', 'U', 'V', 'W', 'X',
+                                   'Y', 'Z']
+# TODO:测试one-hot编码
+char_to_int = dict((c, i) for i, c in enumerate(char_set))
+print(char_to_int)
 
 
 def deNoising(image):
@@ -69,11 +86,30 @@ def generateTrainData(filePath):
 
             img_np = np.array(captcha_image_np)
             x_data.append(img_np)
-            # split('.')[0] to get label from label.png
-            y_data.append(np.array(list(selected_train_file_name.split('.')[0])).astype(np.int))
+            # split('.')[0] to get label from label.png  .astype(np.int)
+            y_data.append(np.array(list(selected_train_file_name.split('.')[0])))
 
     x_data = np.array(x_data).astype(np.float)
     y_data = np.array(y_data)
+
+    for alphabet_list in y_data:
+        for index, value in enumerate(alphabet_list):
+            if (alphabet_list[index]) in alphabet:
+                alphabet_list[index] = 0
+
+    y_data = y_data.astype(dtype=np.int)
+
+    for alphabet_list in y_data:
+        for index, value in enumerate(alphabet_list):
+            if (alphabet_list[index]) in alphabet:
+                temporary_value = alphabet_list[index]
+                alphabet_list[index] = 0
+                alphabet_list = alphabet_list.astype(dtype=np.int)
+                alphabet_list[index] = char_to_int.get(temporary_value)
+            else:
+                alphabet_list = alphabet_list.astype(dtype=np.int)
+    print(y_data.dtype)
+    print(y_data)
     return x_data, y_data
 
 
@@ -94,7 +130,9 @@ def preprocess(x, y):
     """
     x = 2 * tf.cast(x, dtype=tf.float32) / 255. - 1
     x = tf.expand_dims(x, -1)
+    # TODO:自建one_hot编码处理char的标签
     y = tf.cast(y, dtype=tf.int32)
+    # print(y)
     return x, y
 
 

@@ -21,7 +21,7 @@ def getRandomChar():
     random_upper = chr(random.randint(65, 90))  # A~Z
     random_lower = chr(random.randint(97, 122))  # a~z
     random_char = random.choice([random_num, random_upper, random_lower])
-    return random_num
+    return random_char
 
 
 def getRandomColor(is_light=True):
