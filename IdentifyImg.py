@@ -7,7 +7,7 @@ import os
 from PIL import Image
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras import datasets, layers, optimizers, Sequential
+from tensorflow.keras import layers, optimizers, Sequential
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 train_data_dir = r'train'
@@ -22,7 +22,7 @@ def deNoising(image):
     :return: Grayscale Img
     """
     # Set threshold to filter
-    threshold = 127
+    threshold = 128
     # Change to Grayscale
     for i in range(image.width):
         for j in range(image.height):
@@ -40,8 +40,7 @@ def deNoising(image):
                 b = 0
                 image.putpixel((i, j), (r, g, b))
     # Turn to grayscale Img
-    # TODO:暂时不转换成灰度图片，以方便反复测试，灰度图片无法第二次通过像素点的处理
-    # image = image.convert('L')
+    image = image.convert('L')
     return image
 
 
@@ -66,18 +65,12 @@ def generateTrainData(filePath):
             # deNoising
             captcha_image = deNoising(captcha_image)
 
-            # TODO: 验证灰度处理
-            # Save the Img
-            with open("./{}/{}".format(filePath, selected_train_file_name), "wb") as train:
-                captcha_image.save(train, format="png")
-
             captcha_image_np = np.array(captcha_image)
 
             img_np = np.array(captcha_image_np)
             x_data.append(img_np)
             # split('.')[0] to get label from label.png
-            # TODO: maybe .astype(np.int) is error
-            y_data.append(np.array(list(selected_train_file_name.split('.')[0])))
+            y_data.append(np.array(list(selected_train_file_name.split('.')[0])).astype(np.int))
 
     x_data = np.array(x_data).astype(np.float)
     y_data = np.array(y_data)
@@ -106,8 +99,9 @@ def preprocess(x, y):
 
 
 # load_dataset
+batch_size = 10
 train_db = tf.data.Dataset.from_tensor_slices((x_train, y_train))
-train_db = train_db.map(preprocess).batch(10)
+train_db = train_db.map(preprocess).batch(batch_size)
 test_db = tf.data.Dataset.from_tensor_slices((x_test, y_test))
 test_db = test_db.map(preprocess).batch(1)
 
@@ -170,7 +164,7 @@ def test():
 
 
 if __name__ == '__main__':
-    choice_flag = 0  # 0:train, 1: test
+    choice_flag = 1  # 0:train, 1: test
     if os.path.exists(model_dir) and choice_flag == 1:
         test()
     else:
