@@ -2,7 +2,6 @@
 # @Time : 2021/8/8 16:05
 # @Author : lingz
 # @Software: PyCharm
-import numpy
 import os
 from PIL import Image
 import numpy as np
@@ -70,6 +69,7 @@ def generateTrainData(filePath):
     """
     # os.listdir(filePath) return list of files and folders
     # If the path has Chinese characters, it will be garbled, deal with unicode()
+    global index
     train_file_name_list = os.listdir(filePath)
     x_data = []
     y_data = []
@@ -92,23 +92,24 @@ def generateTrainData(filePath):
     x_data = np.array(x_data).astype(np.float)
     y_data = np.array(y_data)
 
-    for alphabet_list in y_data:
-        for index, value in enumerate(alphabet_list):
-            if (alphabet_list[index]) in alphabet:
-                alphabet_list[index] = 0
+    unicode_to_int = ['x']
+    unicode_to_int_index = [0]
+    for index_0, alphabet_list in enumerate(y_data):
+        for index_1, value in enumerate(alphabet_list):
+            if (alphabet_list[index_1]) in alphabet:
+                unicode_to_int.append(alphabet_list[index_1])
+                alphabet_list[index_1] = 0
+                unicode_to_int_index.append(index_0)
+                unicode_to_int_index.append(index_1)
+    y_data = y_data.astype(np.int)
 
-    y_data = y_data.astype(dtype=np.int)
+    # 删除存放字母和该字母二维下标的数组的首个元素
+    del (unicode_to_int[0])
+    del (unicode_to_int_index[0])
 
-    for alphabet_list in y_data:
-        for index, value in enumerate(alphabet_list):
-            if (alphabet_list[index]) in alphabet:
-                temporary_value = alphabet_list[index]
-                alphabet_list[index] = 0
-                alphabet_list = alphabet_list.astype(dtype=np.int)
-                alphabet_list[index] = char_to_int.get(temporary_value)
-            else:
-                alphabet_list = alphabet_list.astype(dtype=np.int)
-    print(y_data.dtype)
+    for i in range(0, len(unicode_to_int)):
+        y_data[unicode_to_int_index[2 * i]][unicode_to_int_index[2 * i + 1]] = char_to_int.get(unicode_to_int[i])
+
     print(y_data)
     return x_data, y_data
 
@@ -132,7 +133,6 @@ def preprocess(x, y):
     x = tf.expand_dims(x, -1)
     # TODO:自建one_hot编码处理char的标签
     y = tf.cast(y, dtype=tf.int32)
-    # print(y)
     return x, y
 
 
