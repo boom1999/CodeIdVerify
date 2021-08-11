@@ -156,8 +156,8 @@ model = Sequential([
 
     # 全连接
     layers.Dense(128),
-    layers.Dense(40),  # 因为这里我们4个数字，所以也就4*10可能性
-    layers.Reshape([4, 10])
+    layers.Dense(248),  # 因为这里我们4个数字，所以也就4*10可能性
+    layers.Reshape([4, 62])
 ])
 
 model.build(input_shape=[None, 20, 80, 1])
@@ -179,7 +179,7 @@ def train():
             if x.shape == (10, 20, 80, 1):
                 with tf.GradientTape() as tape:
                     logits = model(x)
-                    y_onehot = tf.one_hot(y, depth=10)
+                    y_onehot = tf.one_hot(y, depth=62)
                     loss_ce = tf.losses.MSE(y_onehot, logits)
                     loss_ce = tf.reduce_mean(loss_ce)
                 grads = tape.gradient(loss_ce, model.trainable_variables)
