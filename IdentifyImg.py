@@ -197,7 +197,7 @@ def test():
             logits = model(x)
             logits = tf.nn.softmax(logits)
             pred = tf.cast(tf.argmax(logits, axis=2), dtype=tf.int32)
-            print('预测值：', pred[0].numpy(), '真实值：', y[0].numpy(), '是否相同：',
+            print('Pre：', np.array(char_set)[pred[0].numpy()], 'Real：', np.array(char_set)[y[0].numpy()], '是否相同：',
                   int(tf.reduce_sum(tf.cast(tf.equal(pred, y), dtype=tf.int32))) == 4)
 
 
