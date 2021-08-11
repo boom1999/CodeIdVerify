@@ -7,6 +7,7 @@ import os
 import tensorflow as tf
 import IdentifyImg
 
+
 train_data_dir = r'train'
 
 
@@ -16,10 +17,10 @@ def IdentifyTrain(train_flag):
         IdentifyImg.model = tf.keras.models.load_model('model.h5', compile=False)
 
     # Repeat training
-    training_time = 40
+    training_time = 20
     for epoch in range(training_time):
         for step, (x, y) in enumerate(train_db):
-            if x.shape == (10, 20, 80, 1):
+            if x.shape == (15, 20, 80, 1):
                 with tf.GradientTape() as tape:
                     logits = IdentifyImg.model(x)
                     y_one_hot = tf.one_hot(y, depth=62)
@@ -39,7 +40,7 @@ def IdentifyTrain(train_flag):
 print(x_train.shape, y_train.shape)
 
 # load_dataset
-batch_size = 10
+batch_size = 15
 train_db = tf.data.Dataset.from_tensor_slices((x_train, y_train))
 train_db = train_db.map(IdentifyImg.preprocess).batch(batch_size)
 

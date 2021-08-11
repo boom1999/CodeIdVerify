@@ -5,6 +5,7 @@
 
 import random
 import os
+from tqdm import tqdm
 from PIL import Image, ImageDraw, ImageFont
 
 # Set size for the image
@@ -100,21 +101,36 @@ def createImg(folder):
     # Draw interference lines and points
     drawLine(draw)
     drawPoint(draw)
-    print(file_name)
 
     # Save the Img
     with open("./{}/{}.png".format(folder, file_name), "wb") as train:
         img.save(train, format="png")
 
 
+def creat_del_file(path_data):
+    os.path.exists(path_data) or os.makedirs(path_data)
+    for i in os.listdir(path_data):
+        file_data = path_data + "\\" + i
+        os.remove(file_data)
+    print("Original %s set is deleted." % path_data)
+
+
 if __name__ == '__main__':
     # Generate num of Img
-    num = 2000
+    num = 5000
+    train_num = int(num * 0.9)
+    test_num = int(num * 0.1)
 
-    # Generate train and test folders
-    os.path.exists('train') or os.makedirs('train')
-    os.path.exists('test') or os.makedirs('test')
+    # Generate train and test folders, delete files
+    creat_del_file('train')
+    creat_del_file('test')
 
-    for i in range(num):
+    print("Generate new train set.")
+    for i in tqdm(range(train_num)):
         createImg('train')
+    print("The %d train set is successfully generated!" % train_num)
+
+    print("Generate new test set.")
+    for i in tqdm(range(test_num)):
         createImg('test')
+    print("The %d test set is successfully generated!" % test_num)
