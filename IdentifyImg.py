@@ -10,8 +10,6 @@ import tensorflow as tf
 from tensorflow.keras import layers, optimizers, Sequential
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-train_data_dir = r'train'
-test_data_dir = r'test'
 model_dir = r'model.h5'
 char_set = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] + ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
                                                                  'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
@@ -110,14 +108,6 @@ def generateTrainData(filePath):
     return x_data, y_data
 
 
-# Generate train set
-(x_train, y_train) = generateTrainData(train_data_dir)
-# Generate test set
-(x_test, y_test) = generateTrainData(test_data_dir)
-# (num of Img, 20:width, 80:height) (num of Img, 4)
-print(x_train.shape, y_train.shape)
-
-
 def preprocess(x, y):
     """
     Change to tensor
@@ -130,13 +120,6 @@ def preprocess(x, y):
     y = tf.cast(y, dtype=tf.int32)
     return x, y
 
-
-# load_dataset
-batch_size = 10
-train_db = tf.data.Dataset.from_tensor_slices((x_train, y_train))
-train_db = train_db.map(preprocess).batch(batch_size)
-test_db = tf.data.Dataset.from_tensor_slices((x_test, y_test))
-test_db = test_db.map(preprocess).batch(1)
 
 model = Sequential([
     layers.Conv2D(32, kernel_size=[3, 3], padding="same", activation=tf.nn.relu),
@@ -154,4 +137,4 @@ model = Sequential([
 
 model.build(input_shape=[None, 20, 80, 1])
 model.summary()
-optimizer = optimizers.Adam(lr=1e-3)
+optimizer = optimizers.Adam(lr=0.5 * 1e-3)

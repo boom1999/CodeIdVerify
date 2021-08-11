@@ -109,7 +109,7 @@ def createImg(folder):
 
 if __name__ == '__main__':
     # Generate num of Img
-    num = 5000
+    num = 2000
 
     # Generate train and test folders
     os.path.exists('train') or os.makedirs('train')
