@@ -16,6 +16,7 @@ def IdentifyTrain():
     """
     # Repeat training
     training_time = 40
+    loss = 1
     for epoch in range(training_time):
         for step, (x, y) in enumerate(train_db):
             if x.shape == (64, 20, 80, 1):
@@ -24,13 +25,16 @@ def IdentifyTrain():
                     y_one_hot = tf.one_hot(y, depth=62)
                     loss_ce = tf.losses.MSE(y_one_hot, logits)
                     loss_ce = tf.reduce_mean(loss_ce)
+                    if loss_ce < loss:
+                        IdentifyImg.model.save('model.h5')
+                        loss = loss_ce
+                        print("Save new model.h5 successfully! acc：", float(1 - loss_ce))
                 grads = tape.gradient(loss_ce, IdentifyImg.model.trainable_variables)
                 IdentifyImg.optimizer.apply_gradients(zip(grads, IdentifyImg.model.trainable_variables))
 
             if step % 100 == 0:
-                print(epoch, step, 'loss:', float(loss_ce))
-    IdentifyImg.model.save('model.h5')
-    print("Save model.h5 successfully!")
+                print(epoch, step)
+    print("Finally model acc: ", float(1 - loss))
 
 
 # Generate train set

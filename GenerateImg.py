@@ -79,7 +79,7 @@ def createImg(folder):
     # Get picture brush
     draw = ImageDraw.Draw(img)
     # Set the font
-    font = ImageFont.truetype(font="C:/Users/lingz/AppData/Local/Microsoft/Windows/Fonts/Monaco.ttf", size=18)
+    font = ImageFont.truetype(font="C:/Users/lingz/AppData/Local/Microsoft/Windows/Fonts/Monaco.ttf", size=16)
     # Set the Img name
     file_name = ''
 
@@ -117,7 +117,7 @@ def creat_del_file(path_data):
 
 if __name__ == '__main__':
     # Generate num of Img
-    num = 50000
+    num = 5000
     train_num = int(num * 0.9)
     test_num = int(num * 0.1)
 
