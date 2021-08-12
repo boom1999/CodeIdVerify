@@ -88,8 +88,10 @@ def generateTrainData(filePath):
     x_data = np.array(x_data).astype(np.float)
     y_data = np.array(y_data)
 
+    # Temporarily store letters into array
     unicode_to_int = ['x']
     unicode_to_int_index = [0]
+
     for index_0, alphabet_list in enumerate(y_data):
         for index_1, value in enumerate(alphabet_list):
             if (alphabet_list[index_1]) in alphabet:
@@ -124,17 +126,21 @@ def preprocess(x, y):
 model = Sequential([
     layers.Conv2D(32, kernel_size=[3, 3], padding="same", activation=tf.nn.relu),
     layers.MaxPool2D(pool_size=[2, 2], strides=2, padding='same'),
-    layers.Dropout(0.25),
+    layers.Dropout(0.5),
+    layers.Conv2D(64, kernel_size=[3, 3], padding="same", activation=tf.nn.relu),
+    layers.MaxPool2D(pool_size=[2, 2], strides=2, padding='same'),
+    layers.Dropout(0.3),
     layers.Conv2D(64, kernel_size=[3, 3], padding="same", activation=tf.nn.relu),
     layers.MaxPool2D(pool_size=[2, 2], strides=2, padding='same'),
     layers.Dropout(0.25),
+
     layers.Flatten(),
 
-    layers.Dense(128),
+    layers.Dense(2480),
     layers.Dense(248),  # 4*62
     layers.Reshape([4, 62])
 ])
 
 model.build(input_shape=[None, 20, 80, 1])
 model.summary()
-optimizer = optimizers.Adam(lr=0.5 * 1e-3)
+optimizer = optimizers.Adam(lr=0.43 * 1e-3)

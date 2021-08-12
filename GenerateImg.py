@@ -117,7 +117,7 @@ def creat_del_file(path_data):
 
 if __name__ == '__main__':
     # Generate num of Img
-    num = 5000
+    num = 50000
     train_num = int(num * 0.9)
     test_num = int(num * 0.1)
 

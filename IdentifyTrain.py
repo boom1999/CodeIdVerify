@@ -3,24 +3,22 @@
 # @Author : lingz
 # @Software: PyCharm
 
-import os
 import tensorflow as tf
 import IdentifyImg
-
 
 train_data_dir = r'train'
 
 
-def IdentifyTrain(train_flag):
-    # If the model already exists, use it directly
-    if os.path.exists(IdentifyImg.model_dir) & train_flag == 0:
-        IdentifyImg.model = tf.keras.models.load_model('model.h5', compile=False)
-
+def IdentifyTrain():
+    """
+    Save model.h5
+    :return: None
+    """
     # Repeat training
-    training_time = 20
+    training_time = 40
     for epoch in range(training_time):
         for step, (x, y) in enumerate(train_db):
-            if x.shape == (15, 20, 80, 1):
+            if x.shape == (64, 20, 80, 1):
                 with tf.GradientTape() as tape:
                     logits = IdentifyImg.model(x)
                     y_one_hot = tf.one_hot(y, depth=62)
@@ -29,7 +27,7 @@ def IdentifyTrain(train_flag):
                 grads = tape.gradient(loss_ce, IdentifyImg.model.trainable_variables)
                 IdentifyImg.optimizer.apply_gradients(zip(grads, IdentifyImg.model.trainable_variables))
 
-            if step % 10 == 0:
+            if step % 100 == 0:
                 print(epoch, step, 'loss:', float(loss_ce))
     IdentifyImg.model.save('model.h5')
     print("Save model.h5 successfully!")
@@ -40,10 +38,9 @@ def IdentifyTrain(train_flag):
 print(x_train.shape, y_train.shape)
 
 # load_dataset
-batch_size = 15
+batch_size = 64
 train_db = tf.data.Dataset.from_tensor_slices((x_train, y_train))
 train_db = train_db.map(IdentifyImg.preprocess).batch(batch_size)
 
 if __name__ == '__main__':
-    train_flag = 1  # 0: no repeat, 1: repeat
-    IdentifyTrain(train_flag)
+    IdentifyTrain()

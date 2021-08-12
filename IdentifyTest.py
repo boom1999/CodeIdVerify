@@ -12,6 +12,7 @@ test_data_dir = r'test'
 
 def IdentifyTest():
     """
+    correct_rate is over 93% now
     :return: correct_rate = correct_quantity/total_number
     """
     correct_quantity = 0
@@ -43,4 +44,4 @@ test_db = test_db.map(IdentifyImg.preprocess).batch(1)
 
 if __name__ == '__main__':
     correct_rate = IdentifyTest()
-    print('correct_rate{:.2%}'.format(correct_rate))
+    print('correct_rate：{:.2%}'.format(correct_rate))
