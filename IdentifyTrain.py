@@ -34,6 +34,8 @@ def IdentifyTrain():
 
             if step % 100 == 0:
                 print(epoch, step)
+        with IdentifyImg.summary_writer.as_default():
+            tf.summary.scalar('train_loss', loss, step=epoch)
     print("Finally model acc: ", float(1 - loss))
 
 

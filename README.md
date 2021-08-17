@@ -29,4 +29,22 @@ layers.Conv2D(32, kernel_size=[3, 3], padding="same", activation=tf.nn.relu),
     layers.Dense(2480),
     layers.Dense(248),  # 4*62
     layers.Reshape([4, 62])
-``` 
+```
+
+``` md
+.
+├── README.md
+├── __pycache__
+├── logs
+├── test
+│   └── xxx.png 
+├── train
+│   └── xxx.png 
+├── GenerateImg.py
+├── IdentifyImg.py
+├── IdentifyTest.py
+├── IdentifyTrain.py
+└── model.h5
+
+4 directories, 6 files
+```

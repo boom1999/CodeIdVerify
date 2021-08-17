@@ -7,6 +7,7 @@ import os
 from PIL import Image
 import numpy as np
 import tensorflow as tf
+import datetime
 from tensorflow.keras import layers, optimizers, Sequential
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -123,6 +124,7 @@ def preprocess(x, y):
     return x, y
 
 
+tf.summary.trace_on(graph=True, profiler=True)
 model = Sequential([
     layers.Conv2D(32, kernel_size=[3, 3], padding="same", activation=tf.nn.relu),
     layers.MaxPool2D(pool_size=[2, 2], strides=2, padding='same'),
@@ -144,3 +146,5 @@ model = Sequential([
 model.build(input_shape=[None, 20, 80, 1])
 model.summary()
 optimizer = optimizers.Adam(lr=0.43 * 1e-3)
+log_dir = "./logs/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+summary_writer = tf.summary.create_file_writer(log_dir)
